@@ -3,14 +3,10 @@ import importlib
 import random
 import numpy as np
 import torch
-from tap import Tap
+from tap import TAPTestRunner as Tap
 import pdb
 
 from .serialization import mkdir
-from .git_utils import (
-    get_git_rev,
-    save_git_diff,
-)
 
 def set_seed(seed):
     random.seed(seed)
@@ -156,10 +152,12 @@ class Parser(Tap):
             self.save()
 
     def get_commit(self, args):
+        from .git_utils import get_git_rev
         args.commit = get_git_rev()
 
     def save_diff(self, args):
         try:
+            from .git_utils import save_git_diff
             save_git_diff(os.path.join(args.savepath, 'diff.txt'))
         except:
             print('[ utils/setup ] WARNING: did not save git diff')

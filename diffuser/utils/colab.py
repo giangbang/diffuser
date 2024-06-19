@@ -30,8 +30,8 @@ def run_diffusion(model, dataset, obs, n_samples=1, device='cuda:0', **diffusion
     0: to_torch(obs, device=device)
   }
 
-  samples, diffusion = model.conditional_sample(conditions,
-        return_diffusion=True, verbose=False, **diffusion_kwargs)
+  diffusion = model.conditional_sample(conditions,
+        return_chain=True, verbose=False, **diffusion_kwargs)[2]
 
   ## [ n_samples x (n_diffusion_steps + 1) x horizon x (action_dim + observation_dim)]
   diffusion = to_np(diffusion)

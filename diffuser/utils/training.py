@@ -157,8 +157,22 @@ class Trainer(object):
         data = torch.load(loadpath)
 
         self.step = data['step']
-        self.model.load_state_dict(data['model'])
-        self.ema_model.load_state_dict(data['ema'])
+        self.model.load_state_dict(self.resolve_incompatible(data['model']))
+        self.ema_model.load_state_dict(self.resolve_incompatible(data['ema']))
+    
+    def resolve_incompatible(self, state_dict):
+        missing =    ["model.downs.0.3.conv.weight", "model.downs.0.3.conv.bias", 
+                      "model.downs.1.3.conv.weight", "model.downs.1.3.conv.bias", 
+                      "model.ups.0.3.conv.weight", "model.ups.0.3.conv.bias", 
+                      "model.ups.1.3.conv.weight", "model.ups.1.3.conv.bias"]
+        unexpected = ["model.downs.0.2.conv.weight", "model.downs.0.2.conv.bias", 
+                      "model.downs.1.2.conv.weight", "model.downs.1.2.conv.bias", 
+                      "model.ups.0.2.conv.weight", "model.ups.0.2.conv.bias", 
+                      "model.ups.1.2.conv.weight", "model.ups.1.2.conv.bias"]
+        for m, u in zip(missing, unexpected):
+            state_dict[m] = state_dict.pop(u)
+        return state_dict
+
 
     #-----------------------------------------------------------------------------#
     #--------------------------------- rendering ---------------------------------#

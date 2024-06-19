@@ -3,7 +3,7 @@ import importlib
 import random
 import numpy as np
 import torch
-from tap import TAPTestRunner as Tap
+from tap import Tap
 import pdb
 
 from .serialization import mkdir

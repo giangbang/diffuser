@@ -17,7 +17,7 @@ Sample = namedtuple('Sample', 'trajectories values chains')
 
 
 @torch.no_grad()
-def default_sample_fn(model, x, cond, t):
+def default_sample_fn(model, x, cond, t, **kwargs):
     model_mean, _, model_log_variance = model.p_mean_variance(x=x, cond=cond, t=t)
     model_std = torch.exp(0.5 * model_log_variance)
 
@@ -177,7 +177,8 @@ class GaussianDiffusion(nn.Module):
         progress.stamp()
 
         x, values = sort_by_values(x, values)
-        if return_chain: chain = torch.stack(chain, dim=1)
+        if return_chain: 
+            chain = torch.stack(chain, dim=1)
         return Sample(x, values, chain)
 
     @torch.no_grad()
